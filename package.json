@@ -16,10 +16,11 @@
   "dependencies": {
     "express": "^4.16.4",
     "moment": "^2.23.0",
+    "mongoose": "^5.9.21",
     "socket.io": "^2.2.0"
   },
   "devDependencies": {
-    "expect": "^23.6.0",
-    "mocha": "^5.2.0"
+    "expect": "^26.1.0",
+    "mocha": "^8.0.1"
   }
 }
