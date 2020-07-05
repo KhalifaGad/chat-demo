@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon server.js --ext js --exec babel-node",
+    "start": "nodemon server/server.js",
     "test": "mocha server/**/*.test.js",
     "test-watch": "nodemon --exec \"npm test\""
   },
@@ -16,18 +16,11 @@
   "dependencies": {
     "dotenv": "^8.2.0",
     "express": "^4.16.4",
-    "lodash": "^4.17.15",
     "moment": "^2.23.0",
     "mongoose": "^5.9.21",
     "socket.io": "^2.2.0"
   },
   "devDependencies": {
-    "@babel/cli": "^7.7.7",
-    "@babel/core": "^7.10.4",
-    "@babel/node": "^7.10.4",
-    "@babel/plugin-proposal-object-rest-spread": "^7.7.7",
-    "@babel/polyfill": "^7.7.0",
-    "@babel/preset-env": "^7.7.7",
     "expect": "^26.1.0",
     "mocha": "^8.0.1"
   }

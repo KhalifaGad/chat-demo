@@ -1,6 +1,5 @@
 require("dotenv").config();
-// const path = require("path");
-import path from 'path';
+const path = require("path");
 const http = require("http");
 const express = require("express");
 const { attachSocketIO } = require("./socket.io.js");
