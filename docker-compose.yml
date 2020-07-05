@@ -1,0 +1,28 @@
+version: "3.7"
+services:
+  backend:
+    build: .
+    restart: always
+    volumes:
+      - ./:/chat-demo
+    ports:
+      - "3300:3000"
+    depends_on:
+      - chat-demo-db
+    networks:
+      net:
+  chat-demo-db:
+    image: mongo:latest
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo:/var/lib/mongo
+      - ./externalVolumes/db:/data/db
+    networks:
+      net:
+volumes:
+  mongo:
+networks:
+  net:
+    driver: bridge
