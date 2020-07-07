@@ -22,6 +22,7 @@ app.use(express.static(publicPath));
 server = attachSocketIO(server);
 
 connectDB(dbUrl).then(() => {
+  console.log("mongo is up "+dbUrl)
   server.listen(port, () => {
     console.log(`Server is up on port ${port}`);
   });
