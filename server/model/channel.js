@@ -4,7 +4,7 @@ let channelSchema = mongoose.Schema({
   users: [
     {
       type: String,
-      require: true,
+      required: true,
     },
   ],
   lastMessage: {

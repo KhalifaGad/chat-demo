@@ -8,19 +8,19 @@ let chatSchema = mongoose.Schema({
   },
   text: {
     type: String,
-    require: true,
+    required: true,
   },
   from: {
     type: mongoose.Schema.Types.ObjectId,
-    require: true,
+    required: true,
   },
   date: {
     type: Date,
-    require: true,
+    required: true,
   },
   type: {
     type: String,
-    require: true,
+    required: true,
   },
 });
 

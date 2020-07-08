@@ -7,6 +7,7 @@ const { generateMessage, generateLocationMessage } = require("./utils/message");
 const { isRealString } = require("./utils/isRealString");
 const { chatModule } = require("./module/index");
 const { text } = require("express");
+const moment = require("moment");
 
 let roomsArr = [];
 let room;
@@ -81,9 +82,9 @@ function attachSocketIO(server) {
         text: message.text,
         from: message.userId,
         type: "text",
-        date: new Date(),
+        date: moment().valueOf(),
       };
-      console.log(socket.rooms);
+      console.log(moment(messages.date).format('LT'));
       if (isRealString(messages.text)) {
         io.to(room.id).emit(
           "newMessage",
@@ -100,7 +101,7 @@ function attachSocketIO(server) {
         text: Date.now() + message.name,
         from: message.userId,
         type: "img",
-        date: new Date(),
+        date: moment().valueOf(),
       };
 
       var writer = fs.createWriteStream(
@@ -117,7 +118,7 @@ function attachSocketIO(server) {
         console.log("up");
         io.to(room.id).emit(
           "image-uploaded",
-          generateMessage(messages.from,"./tmp/" + messages.text),
+          generateMessage(messages.from, "./tmp/" + messages.text)
         );
       });
       writer.on("error", function (err) {
