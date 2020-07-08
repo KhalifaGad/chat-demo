@@ -92,19 +92,6 @@ function attachSocketIO(server) {
       callback("This is the server:");
     });
 
-    // socket.on(
-    //   "createLocationMessage",
-    //   (coords) => {
-    //     //let user = users.getUser(socket.id);
-
-    //     //  if (user) {
-    //     io.to(user.room).emit(
-    //       "newLocationMessage",
-    //       generateLocationMessage(user.name, coords.lat, coords.lng)
-    //     );
-    //   }
-    //   // }
-    // );
     socket.on("disconnect", async () => {
       // let user = users.removeUser(socket.id);
       // if (user) {
