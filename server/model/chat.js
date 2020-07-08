@@ -18,6 +18,10 @@ let chatSchema = mongoose.Schema({
     type: Date,
     require: true,
   },
+  type: {
+    type: String,
+    require: true,
+  },
 });
 
 let chatlModel = mongoose.model("Chat", chatSchema);

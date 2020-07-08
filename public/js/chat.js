@@ -81,12 +81,24 @@ socket.on("newLocationMessage", function (message) {
 });
 
 socket.on("image-uploaded", function (message) {
-  alert(message.name);
+  const formattedTime = moment(message.createdAt).format("LT");
+  const template = document.querySelector("#message-template").innerHTML;
+
   var img = document.createElement("img");
-  console.log(img)
-  img.setAttribute("src", message.name);
+  img.setAttribute("src", message.text);
   img.setAttribute("height", "100px");
-  document.getElementById("messages").appendChild(img);
+
+  const html = Mustache.render(template, {
+    from: message.from,
+    createdAt: formattedTime,
+  });
+
+  const div = document.createElement("div");
+  div.innerHTML= html;
+  div.appendChild(img);
+
+  document.querySelector("#messages").appendChild(div);
+  scrollToBottom();
 });
 
 document.querySelector("#submit-btn").addEventListener("click", function (e) {
@@ -118,10 +130,12 @@ document.querySelector("#my-file").addEventListener("change", function (e) {
     socket.emit("upload-image", {
       name: firstFile.name,
       data: reader.result,
+      userId: params[0],
     });
   };
 
   reader.readAsArrayBuffer(firstFile);
+  document.querySelector("#my-file").value = "";
 });
 
 document

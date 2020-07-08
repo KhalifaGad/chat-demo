@@ -6,20 +6,21 @@ const { Rooms } = require("./utils/rooms");
 const { generateMessage, generateLocationMessage } = require("./utils/message");
 const { isRealString } = require("./utils/isRealString");
 const { chatModule } = require("./module/index");
+const { text } = require("express");
 
 let roomsArr = [];
-let roomFlag = false;
 let room;
 function attachSocketIO(server) {
   let io = socketIO(server);
-  let roomId = "";
   io.on("connection", (socket) => {
     // console.log("siz: "+roomsArr.length)
     console.log("A new user just connected");
 
     socket.on("join", async (params, callback) => {
-      let user1Id = "5ef354b98312541498b9e0eb",
-        user2Id = "5ef354b98312541498b9e0ea";
+      let roomId = "";
+      let roomFlag = false;
+      // let user1Id = "5ef354b98312541498b9e0eb",
+      //   user2Id = "5ef354b98312541498b9e0ea";
       if (!params) {
         return callback("Name and room are required");
       }
@@ -47,7 +48,6 @@ function attachSocketIO(server) {
         }
       }
 
-      console.log("flag: " + roomFlag);
       if (!roomFlag) {
         room = new Rooms(roomId);
         console.log("users1: " + (await room.getUserList()));
@@ -80,6 +80,7 @@ function attachSocketIO(server) {
         channelId: room.id,
         text: message.text,
         from: message.userId,
+        type: "text",
         date: new Date(),
       };
       console.log(socket.rooms);
@@ -93,9 +94,17 @@ function attachSocketIO(server) {
       callback("This is the server:");
     });
 
-    socket.on("upload-image", function (message) {
+    socket.on("upload-image", async function (message) {
+      let messages = {
+        channelId: room.id,
+        text: Date.now() + message.name,
+        from: message.userId,
+        type: "img",
+        date: new Date(),
+      };
+
       var writer = fs.createWriteStream(
-        path.join(__dirname, "/../public/tmp/" + message.name),
+        path.join(__dirname, "/../public/tmp/" + messages.text),
         {
           encoding: "base64",
         }
@@ -106,13 +115,15 @@ function attachSocketIO(server) {
 
       writer.on("finish", function () {
         console.log("up");
-        socket.emit("image-uploaded", {
-          name: "./tmp/" + message.name,
-        });
+        io.to(room.id).emit(
+          "image-uploaded",
+          generateMessage(messages.from,"./tmp/" + messages.text),
+        );
       });
       writer.on("error", function (err) {
         console.log(err);
       });
+      await room.messagesArr.push(messages);
     });
 
     socket.on("disconnect", async () => {
@@ -121,7 +132,6 @@ function attachSocketIO(server) {
         roomsArr = roomsArr.filter((rom) => {
           return room.id !== rom.id;
         });
-        roomFlag = false;
         let saveMessages = await chatModule.addMessges(room.getMessages());
         delete room;
       }
