@@ -1,4 +1,6 @@
 const socketIO = require("socket.io");
+const fs = require("fs");
+const path = require("path");
 
 const { Rooms } = require("./utils/rooms");
 const { generateMessage, generateLocationMessage } = require("./utils/message");
@@ -8,7 +10,6 @@ const { chatModule } = require("./module/index");
 let roomsArr = [];
 let roomFlag = false;
 let room;
-
 function attachSocketIO(server) {
   let io = socketIO(server);
   let roomId = "";
@@ -76,32 +77,52 @@ function attachSocketIO(server) {
 
     socket.on("createMessage", async (message, callback) => {
       let messages = {
-        channelId:room.id,
+        channelId: room.id,
         text: message.text,
-        from: "5ef354b98312541498b9e0eb",
+        from: message.userId,
         date: new Date(),
       };
       console.log(socket.rooms);
       if (isRealString(messages.text)) {
         io.to(room.id).emit(
           "newMessage",
-          generateMessage(socket.id, messages.text)
+          generateMessage(messages.from, messages.text)
         );
       }
       await room.messagesArr.push(messages);
       callback("This is the server:");
     });
 
+    socket.on("upload-image", function (message) {
+      var writer = fs.createWriteStream(
+        path.join(__dirname, "/../public/tmp/" + message.name),
+        {
+          encoding: "base64",
+        }
+      );
+
+      writer.write(message.data);
+      writer.end();
+
+      writer.on("finish", function () {
+        console.log("up");
+        socket.emit("image-uploaded", {
+          name: "./tmp/" + message.name,
+        });
+      });
+      writer.on("error", function (err) {
+        console.log(err);
+      });
+    });
+
     socket.on("disconnect", async () => {
-      // let user = users.removeUser(socket.id);
-      // if (user) {
       await room.removeUser(socket.id);
       if ((await room.getUserList().length) == 0) {
         roomsArr = roomsArr.filter((rom) => {
           return room.id !== rom.id;
         });
         roomFlag = false;
-        let saveMessages=await chatModule.addMessges(room.getMessages())
+        let saveMessages = await chatModule.addMessges(room.getMessages());
         delete room;
       }
       io.to(room.id).emit("updateUsersList", room.getUserList());
