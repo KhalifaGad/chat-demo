@@ -1,6 +1,8 @@
 require("dotenv").config();
 const path = require("path");
 const http = require("http");
+const fs = require('fs');
+
 const express = require("express");
 const { attachSocketIO } = require("./socket.io.js");
 const connectDB = require("./db/dbConnection.js");
@@ -11,10 +13,10 @@ const connectDB = require("./db/dbConnection.js");
 // const {isRealString} = require('./utils/isRealString');
 // const {Users} = require('./utils/users');
 let dbUrl = process.env.BAZAR_DB_URL_LOCAL;
-
 const publicPath = path.join(__dirname, "/../public");
 const port = process.env.PORT || 3001;
 let app = express();
+app.use(express.static(publicPath));
 let server = http.createServer(app);
 
 app.use(express.static(publicPath));
