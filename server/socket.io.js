@@ -107,7 +107,7 @@ function attachSocketIO(server) {
       writer.on("finish", function () {
         console.log("up");
         socket.emit("image-uploaded", {
-          name: "/../public/tmp/" + message.name,
+          name: "./tmp/" + message.name,
         });
       });
       writer.on("error", function (err) {

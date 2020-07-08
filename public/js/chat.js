@@ -82,10 +82,11 @@ socket.on("newLocationMessage", function (message) {
 
 socket.on("image-uploaded", function (message) {
   alert(message.name);
-  varimg = document.createElement("img");
+  var img = document.createElement("img");
+  console.log(img)
   img.setAttribute("src", message.name);
   img.setAttribute("height", "100px");
-  document.querySelector("#messages").appendChild(img);
+  document.getElementById("messages").appendChild(img);
 });
 
 document.querySelector("#submit-btn").addEventListener("click", function (e) {
